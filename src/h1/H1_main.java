@@ -7,9 +7,12 @@ public class H1_main {
 		list.addPatient(new Patient("Peter Hurensohn", 2));
 		list.addPatient(new Patient("Peter Hurensohn", 3));
 		list.addPatient(new Patient("Peter Hurensohn", 5));
-		list.addPatient(new Patient("Peter Hurensohn", 4));
-//		list.getNextPatient();
+		list.addPatient(new Patient("Peter Hurensohn", 1));
+
+		list.getNextPatient();
 		
-		System.out.println(list.printProListeToString());
+		list.printProListeToString();
+		
+		System.out.println(list.getPosition(new Patient("Peter Hurensohn", 5)));
 	}
 }

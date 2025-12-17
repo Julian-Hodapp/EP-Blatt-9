@@ -13,20 +13,21 @@ public class PrioListe {
 			boolean sorted = false;
 			
 			for (int i = 0; i < myList.length; i++) {
-				if(myList[i].prio > p.prio && sorted == false) {
+				if(p.prio > myList[i].prio) {
+					newList[i] = myList[i];
+				} else if(sorted == false) {
 					newList[i] = p;
+					
 					sorted = true;
 				} else {
-					if (sorted == false) {
-						newList[i] = myList[i];
-					} else {
-						newList[i] = myList[i-1];
-					}
+					newList[i] = myList[i-1];
 				}
 			}
 			
 			if (sorted == false) {
 				newList[myList.length] = p;
+			} else {
+				newList[myList.length] = myList[myList.length - 1];
 			}
 		}
 		
@@ -34,16 +35,19 @@ public class PrioListe {
 	}
 	
 	public Patient getNextPatient() {
-		Patient firstPatient = myList.length > 0 ? myList[0] : null;
-		Patient[] newList = myList.length > 1 ? new Patient[myList.length - 1] : new Patient[]{};
+		Patient firstPatient = myList.length == 0 ? null : myList[0];
+		Patient[] newList = myList.length > 1 ? new Patient[myList.length - 1] : new Patient[0];
 		
-		if(myList.length < 2) {
+		if(myList.length >= 2) {
 			for (int i = 1; i < myList.length; i++) {
-				newList[i] = myList[i-1];
+				newList[i-1] = myList[i];
 			}
 		}
 		
+		
 		myList = newList;
+		
+		
 		
 		return firstPatient;
 	}
@@ -58,15 +62,10 @@ public class PrioListe {
 		return -1;
 	}
 	
-	public String printProListeToString() {
-		String string = "[";
-		
-		for (int i = 0; i < myList.length; i++) {
-			string = string + myList[i].name + "," + myList[i].prio + ";";
+	public void printProListeToString() {
+		for (Patient p : myList) {
+			System.out.println("name" + p.name);
+			System.out.println("prio" + p.prio);
 		}
-		
-		string = string + "]";
-		
-		return string;
 	}
 }
