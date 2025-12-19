@@ -8,4 +8,9 @@ public class Patient {
 		this.name = name;
 		this.prio = prio;
 	}
+	
+	//@Override
+    // public String toString() {
+    //    return name + " (Prio: " + prio + ")";
+    //}
 }

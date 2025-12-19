@@ -1,156 +1,71 @@
 package h2;
 
+import java.util.ArrayList;
+
 public class Bus {
-	public Passenger[] passengers;
+	public ArrayList<Passenger> passengers;
 	
 	public Bus() {
-		this.passengers = new Passenger[0];
+		passengers = new ArrayList<>();
 	}
 	
 	public void enterBus(Passenger p) {
-		Passenger[] newPassengerList = passengers.length == 0 ? new Passenger[1] : new Passenger[passengers.length + 1];
-		
-		if (passengers.length == 0) {
-			newPassengerList[0] = p;
-		} else {
-			for (int i = 0; i < passengers.length; i++) {
-				newPassengerList[i] = passengers[i];
-			}
-			
-			newPassengerList[passengers.length] = p;
-		}
-		
-		this.passengers = newPassengerList;
+		passengers.add(p);
 	}
 	
-	public void exitBus() {
-		int exitPassengers = 0;
-		//count exit Passengers
-		for (int i = 0; i < passengers.length; i++) {
-			if(passengers[i].planned == passengers[i].visited) exitPassengers++;
-		}
-		
-		if (exitPassengers > 0) {
-			Passenger[] newPassengerList = new Passenger[passengers.length - exitPassengers];
-			int currentIndex = 0;
-			
-			for (int i = 0; i < passengers.length; i++) {
-				if (passengers[i].planned != passengers[i].visited) {
-					newPassengerList[currentIndex] = passengers[i];
-					currentIndex++;
-				}
-			}
-			
-			this.passengers = newPassengerList;
+	private void exitBus() {
+		for(int i = 0; i < passengers.size(); i++) {
+			if(passengers.get(i).planned == passengers.get(i).visited) {
+				passengers.remove(i);
+				i -= 1;
+			}	
 		}
 	}
 	
 	public void nextStop(Passenger[] boarding) {
-		for (int i = 0; i < passengers.length; i++) {
-			passengers[i].visited++;
+		for(int i = 0; i < passengers.size(); i++) {
+			passengers.get(i).visited += 1;
 		}
-		
 		exitBus();
-		
-		for (int i = 0; i < boarding.length; i++) {
-			enterBus(boarding[i]);
+		for(int i = 0; i < boarding.length; i++) {
+			passengers.add(boarding[i]);
 		}
 	}
 	
 	public void nextStop() {
-		nextStop(new Passenger[] {});
+		for(int i = 0; i < passengers.size(); i++) {
+			passengers.get(i).visited += 1;
+		}
+		exitBus();
 	}
 	
-	public Passenger[] findPassengersWithoutTickets() {
-		int passengersWithoutTicketNumber = 0;
-		//count exit Passengers
-		for (int i = 0; i < passengers.length; i++) {
-			if(passengers[i].ticket == false) passengersWithoutTicketNumber++;
-		}
-		
-		if (passengersWithoutTicketNumber > 0) {
-			Passenger[] newPassengerList = new Passenger[passengers.length - passengersWithoutTicketNumber];
-			Passenger[] passengersWithoutTicketList = new Passenger[passengersWithoutTicketNumber];
-			int currentIndex = 0;
-			int currentPassengerWithoutTicketIndex = 0;
-			
-			for (int i = 0; i < passengers.length; i++) {
-				if (passengers[i].ticket) {
-					newPassengerList[currentIndex] = passengers[i];
-					currentIndex++;
-				} else {
-					passengersWithoutTicketList[currentPassengerWithoutTicketIndex] = passengers[i];
-					currentPassengerWithoutTicketIndex++;
-				}
+	public ArrayList<Passenger> findPassengersWithoutTickets() {
+		ArrayList<Passenger> rabauken = new ArrayList<>();
+		for(int i = 0; i < passengers.size(); i++) {
+			if(!passengers.get(i).ticket) {
+				rabauken.add(passengers.get(i));
+				passengers.remove(i);
+				i -= 1;
 			}
-			
-			this.passengers = newPassengerList;
-			
-			return passengersWithoutTicketList;
-		} else {
-			return new Passenger[] {};
 		}
+		return rabauken;
 	}
 	
 	public void transferPassengers(Bus otherBus, String[] passengerNames) {
-		Passenger[] newPassengerList = passengers;
-		for (Passenger p: passengers) {
-			boolean hasToBeTransfered = false;
-			
-			for (String pName : passengerNames) {
-				if (p.name == pName) hasToBeTransfered = true;
-			}
-			
-			if (hasToBeTransfered) {
-				otherBus.enterBus(p);
-				
-				boolean pfound = false;
-				Passenger[] newPassengerListWithoutP = new Passenger[newPassengerList.length - 1];
-				
-				for (int i = 0; i < newPassengerList.length; i++) {
-					if(pfound) {
-						newPassengerListWithoutP[i - 1] = newPassengerList[i];
-					} else {
-						if(newPassengerList[i].name == p.name) {
-							pfound = true;
-						} else {
-							newPassengerListWithoutP[i] = newPassengerList[i];
-						}
-					}
-				}
-				
-				this.passengers = newPassengerListWithoutP;
-			}
-		}
-	}
-	
-	public void printAllPassengers() {
-		if (passengers == null) {
-			System.out.println("null");
-		} else {
-			System.out.println("Passengers:");
-			for (Passenger p : passengers) {
-				if (p == null) {
-					System.out.println("Error");
-				} else {
-					System.out.println("name: " + p.name + "; planned: " + p.planned + "; visited: " + p.visited + "; ticket: " + p.ticket);
+		for(int i = 0; i < passengers.size(); i++) {
+			for(int j = 0; j < passengerNames.length; j++) {
+				if(passengers.get(i).name == passengerNames[j]) {
+					otherBus.enterBus(passengers.get(i));
+					passengers.remove(i);
+					i =- 1;
+					break;
 				}
 			}
 		}
 	}
 	
-	public void printPassengersListFunction(Passenger[] optional) {
-		if (passengers == null) {
-			System.out.println("null");
-		} else {
-			System.out.println("Passengers (without ticket):");
-			for (Passenger p : optional) {
-				if (p == null) {
-					System.out.println("Error");
-				} else {
-					System.out.println("name: " + p.name + "; planned: " + p.planned + "; visited: " + p.visited + "; ticket: " + p.ticket);
-				}
-			}
-		}
-	}
+	//@Override
+	//public String toString() {
+	//    return "Bus passengers: " + passengers;
+	//}
 }

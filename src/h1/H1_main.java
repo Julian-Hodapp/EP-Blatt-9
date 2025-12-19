@@ -2,17 +2,23 @@ package h1;
 
 public class H1_main {
 	public static void main(String[] args) {
-		PrioListe list = new PrioListe();
+		Patient a = new Patient("Daniel", 2);
+		Patient b = new Patient("Sebastian", 5);
+		Patient c = new Patient("Linda", 10);
+		Patient d = new Patient("Arschlochkind", 3);
 		
-		list.addPatient(new Patient("Peter Hurensohn", 2));
-		list.addPatient(new Patient("Peter Hurensohn", 3));
-		list.addPatient(new Patient("Peter Hurensohn", 5));
-		list.addPatient(new Patient("Peter Hurensohn", 1));
-
-		list.getNextPatient();
+		PrioListe eins = new PrioListe();
+		eins.addPatient(a);
+		//eins.printListe();
+		eins.addPatient(b);
+		//eins.printListe();
+		eins.addPatient(c);
+		//eins.printListe();
+		eins.addPatient(d);
+		//eins.printListe();
 		
-		list.printProListeToString();
-		
-		System.out.println(list.getPosition(new Patient("Peter Hurensohn", 5)));
+		System.out.println(eins.getNextPatient());
+		//eins.printListe();
+		System.out.println(eins.getPosition(c));
 	}
 }
